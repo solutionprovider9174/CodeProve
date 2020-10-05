@@ -1,0 +1,48 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+<form method="POST" action={% url 'newcompile' %}>
+<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
+        <div class="container">
+            <div id="topbar">
+                <div class="lang-choose">
+                    <select class="form-control" name="lang" id="lang">
+                        <option value="CPP" selected>C++ (g++ 4.8.4)</option>
+                        <option value="JAVA">Java (openjdk 1.7.0_09)</option>
+                        <option value="PYTHON">Python (python 2.7.6)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div id="showres">
+                    <div style="margin-left:85.4%;"class="run-save-panel">
+                        <button class="btn btn-success" id="runcode"  data-toggle="tooltip" data-placement="top" title="Compile and Run">Compile and Run</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="input-container">
+                    <textarea id="custom-input" class="input-textarea" placeholder="Write inputs to program."></textarea>
+                </div>
+            </div>
+
+            <div class="outputbox">
+                <div class="outputio">
+                    <div class="outputerror">
+                        <div class="errorkey"></div>
+                        <pre class="errormessage"></pre>
+                    </div>
+
+                    <div class="io-show">
+                        <b>Output</b>
+                        <pre class="output-text outputo"> </pre>
+                        <b>Input</b>
+                        <pre class="output-text outputi"> </pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+</form>
+{% endblock %}
