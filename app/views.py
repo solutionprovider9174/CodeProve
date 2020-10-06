@@ -16,38 +16,29 @@ def home(request):
 @login_required(login_url='/login/')
 def newcompile(request):
     if request.method == 'POST':
-        print("hi")
         run_url = "https://api.jdoodle.com/v1/execute/"
-        source = request.POST['source']
-        lang = request.POST['lang']
-        data = {
-            'client_secret': '***',
-            'async': 0,
-            'source': source,
-            'lang': lang,
-            'time_limit': 5,
-            'memory_limit': 262144,
-        }
+        source = request.POST.get('source')
+        lang = request.POST.get('lang')
+        data = {"clientId": "6e7161fa5b217bad33b5ab5f786f93d8",
+                "clientSecret":"48dcca2374d1c896564394af7856fdf8711e6aa5e9526a47484fc1169a81d5eb",
+                "script":source,
+                "language":lang,
+                "versionIndex":"0"}
         if 'input' in request.POST:
             data['input'] = request.POST['input']
-        r = requests.post(run_url, data=data)
+        r = requests.post(run_url, json=data)
+        print(r.content)
         return JsonResponse(r.json(), safe=False)
     else:
-        run_url = "https://api.jdoodle.com/v1/execute/"
-        data = {
-            "clientID" : "4b767acfc099dee0e0063a0d9c69a17e",
-            "clientSecret" : "40c3dc0150e9e70db38fb06bed3d449a6132b0baaf568f9aa6d93e74bb2465f9",
-            "language" : "php",
-            "script" : "<?php echo \"hello\" ?>",
-            "versionIndex" : "0",
-        }
-        r = requests.post(run_url, data=data)
-        print(r.json())
         return render(
             request,
             'app/compile.html',
             {
                 'title': 'Home Page',
+                'context': {'java':('vJDK 1.8.0_66':'0','JDK 9.0.1':'1','JDK 10.0.1':'2','JDK 11.0.4':'3'),
+                'python2':('2.7.11':'0','2.7.15':'1','2.7.16':'2'),
+                'cpp':('GCC 5.3.0':'0','Zapcc 5.0.0':'1','GCC 7.2.0':'2','GCC 8.1.0':'3','GCC 9.1.0':'4')
+                }
             }
         )
 
