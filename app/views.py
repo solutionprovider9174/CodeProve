@@ -5,6 +5,7 @@ import requests
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from .models import *
+from django.core import serializers
 # Create your views here.
 def home(request):
     return render(
@@ -22,9 +23,11 @@ def newcompile(request):
     examples = Example.objects.filter(problem=problems)
     hints = Hint.objects.filter(problem=problems)
     solutions = Solution.objects.filter(problem=problems)
+    track = SubmitTrack.objects.filter(created_by=request.user).order_by('-created_on')[0]
 
     if request.method == 'POST':
         run_url = "https://api.jdoodle.com/v1/execute/"
+        # print(request.POST)
         source = request.POST.get('source')
         lang_index = request.POST.get('lang').split(',')
         lang = lang_index[0]
@@ -38,7 +41,17 @@ def newcompile(request):
         if 'input' in request.POST:
             data['input'] = request.POST['input']
         r = requests.post(run_url, json=data)
-        return JsonResponse(r.json(), safe=False)
+        data = r.json()
+        status = data['statusCode']
+        memory = data['memory']
+        runtime = data['cpuTime']
+
+
+        submit_track = SubmitTrack.objects.create(status=status,memory=memory,runtime=runtime,language=lang,created_by = request.user, problem=problems)
+        track = SubmitTrack.objects.filter(created_by=request.user).values("created_on","language","runtime","memory","status").order_by('-created_on')[:5]
+        data['track']=list(track)
+        print(data)
+        return JsonResponse(data, safe=False)
     else:
         initial = {
                 'context': {'java':[('JDK 1.8.0_66','0'),('JDK 9.0.1','1'),('JDK 10.0.1','2'),('JDK 11.0.4','3')],
@@ -50,14 +63,15 @@ def newcompile(request):
         description = {'problems':problems,
                         'examples':examples,
                         'hints':hints,
-                        'solutions':solutions
+                        'solutions':solutions,
+                        'track':track
 
         }
 
 
         context = { 'title': 'Home Page',
                     'initial':initial,
-                    'description':description
+                    'description':description,
                   }
             
         return render(

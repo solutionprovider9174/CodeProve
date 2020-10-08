@@ -44,7 +44,6 @@ class Solution(models.Model):
 		return self.title
 
 class SubmitTrack(models.Model):
-	submit_time = models.DateTimeField(auto_now_add=True)
 	status = models.CharField(max_length=200,blank=True,null=True)
 	runtime = models.CharField(max_length=200,blank=True,null=True)
 	memory = models.CharField(max_length=200,blank=True,null=True)
