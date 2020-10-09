@@ -87,7 +87,7 @@ def register(request):
         form.save()
         username = form.cleaned_data.get('username')
         password = form.cleaned_data.get('password1')
-        user = authenticate(username=username, password=password)
+        user = authenticate(username=username, password=password,email=username)
         login(request, user)
         return redirect('home')
     return render(request, 'app/register.html', {'form': form})
