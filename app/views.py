@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm
+from .forms import UserSignupForm
 from django.contrib.auth import login, authenticate
 import requests
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from .models import *
 from django.core import serializers
-# Create your views here.
+
 def home(request):
     return render(
         request,
@@ -23,7 +23,7 @@ def newcompile(request):
     examples = Example.objects.filter(problem=problems)
     hints = Hint.objects.filter(problem=problems)
     solutions = Solution.objects.filter(problem=problems)
-    track = SubmitTrack.objects.filter(created_by=request.user).order_by('-created_on')[0]
+    track = SubmitTrack.objects.filter(created_by=request.user).order_by('-created_on')
 
     if request.method == 'POST':
         run_url = "https://api.jdoodle.com/v1/execute/"
@@ -69,7 +69,7 @@ def newcompile(request):
         }
 
 
-        context = { 'title': 'Home Page',
+        context = { 'title': 'Compile',
                     'initial':initial,
                     'description':description,
                   }
@@ -82,12 +82,12 @@ def newcompile(request):
 
 
 def register(request):
-    form = UserCreationForm(request.POST)
+    form = UserSignupForm(request.POST)
     if form.is_valid():
         form.save()
         username = form.cleaned_data.get('username')
         password = form.cleaned_data.get('password1')
-        user = authenticate(username=username, password=password,email=username)
+        user = authenticate(username=username, password=password)
         login(request, user)
         return redirect('home')
     return render(request, 'app/register.html', {'form': form})
