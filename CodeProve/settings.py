@@ -26,7 +26,7 @@ SECRET_KEY = 'sv1aky#y3c6^*e(d=5*0%@+h=)p41n8paji3ygzi+$dv&u%@pc'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'app',
 ]
 
 MIDDLEWARE = [
@@ -79,7 +80,7 @@ DATABASES = {
 
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
 
-        'NAME': 'CodeProve',
+        'NAME': 'codeprove',
 
         'USER': 'postgres',
 
@@ -125,6 +126,13 @@ USE_L10N = True
 
 USE_TZ = True
 
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'deepakpandayaviox@gmail.com'
+EMAIL_HOST_PASSWORD = 'deep@mail.com'
+EMAIL_USE_TLS = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/

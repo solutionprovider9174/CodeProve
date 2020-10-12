@@ -1,15 +1,18 @@
 {% extends "app/layout.html" %}
-
 {% block content %}
-<form method="POST" action={% url 'newcompile' %}>
+<h2>{{ title }}</h2>
 <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
         <div class="container">
             <div id="topbar">
                 <div class="lang-choose">
                     <select class="form-control" name="lang" id="lang">
-                        <option value="CPP" selected>C++ (g++ 4.8.4)</option>
-                        <option value="JAVA">Java (openjdk 1.7.0_09)</option>
-                        <option value="PYTHON">Python (python 2.7.6)</option>
+                        {% for key,value_list in initial.context.items %}
+                        {% for value in value_list %}
+
+                        <option value="{{ key }},{{value.1 }}"> {{ key }} ({{ value.0 }})</option>
+
+                        {% endfor %}
+                        {% endfor %}
                     </select>
                 </div>
             </div>
@@ -17,14 +20,14 @@
             <div class="row">
                 <div id="showres">
                     <div style="margin-left:85.4%;"class="run-save-panel">
-                        <button class="btn btn-success" id="runcode"  data-toggle="tooltip" data-placement="top" title="Compile and Run">Compile and Run</button>
+                        <button class="btn btn-success" id="runcode"  data-toggle="tooltip" data-placement="top" title="Compile and Run" onclick="outputFunction()">Compile and Run</button>
                     </div>
                 </div>
             </div>
 
             <div class="row">
                 <div class="input-container">
-                    <textarea id="custom-input" class="input-textarea" placeholder="Write inputs to program."></textarea>
+                    <textarea id="custom-input" name="source" class="input-textarea" placeholder="Write inputs to program."></textarea>
                 </div>
             </div>
 
@@ -37,12 +40,123 @@
 
                     <div class="io-show">
                         <b>Output</b>
-                        <pre class="output-text outputo"> </pre>
+                        <pre id="result" class="output-text outputo"> </pre>
                         <b>Input</b>
                         <pre class="output-text outputi"> </pre>
                     </div>
                 </div>
             </div>
         </div>
-</form>
+
+
+<div class="container">
+<div class="row">
+<table>
+    <thead>
+        <tr>
+          <th>Time Submitted</th>
+          <th>Status</th>
+          <th>Runtime</th> 
+          <th>Memory</th>
+          <th>Language</th>
+        </tr>
+    </thead>
+    <tbody id ="status-row">
+        <tr>
+          <td>{{ description.track.created_on }}</td> 
+          <td>{{ description.track.status }}</td>
+          <td>{{ description.track.runtime }}</td> 
+          <td>{{ description.track.memory }}</td>
+          <td>{{ description.track.language }}</td>
+        </tr>
+    </tbody> 
+</table>
+</div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <h3> Problems </h3>
+
+        {{ description.problems }}
+
+        <h3> Examples </h3>
+
+        {% for e in description.examples %}
+  
+        <b> {{ e.title }} </b> <br>
+        <b> Input:</b> {{ e.example_input }} <br>
+        <b> Output:</b> {{ e.output }} <br>
+
+        {% endfor %}
+
+        <h3> Hints </h3>
+
+        {% for h in description.hints %}
+
+        <b> {{ h.title }} </b>  <br>
+        {{ h.description }} <br><br>
+
+        {% endfor %}
+
+        <h3> Solutions </h3>
+
+        {% for s in description.solutions %}
+
+        <b> {{ s.title }} </b>  <br>
+        {{ s.description }} <br>
+        {{ s.code }} <br>
+        {{ s.complexity_analysis }} <br>
+
+        {% endfor %}
+
+    </div>
+
+
+
+{% csrf_token %}
+<script type="text/javascript">
+    const csrfToken = document.getElementsByName("csrfmiddlewaretoken")[0].value;
+    async function fetchData(data) {
+        let url = "{% url 'newcompile' %}";
+        let response = await fetch(url, {method: 'POST',body: data})
+        var ret;
+        if (response.ok){
+            ret = await response.json();
+        }else{
+            ret = response.status;
+        }
+        return ret;
+    }
+    async function outputFunction() {
+        var language = document.getElementById('lang').value;
+        var script = document.getElementById('custom-input').value;
+        var resp = null;
+        var data = new FormData();
+        data.append('lang',language);
+        data.append('source',script);
+        data.append('csrfmiddlewaretoken',csrfToken);
+        resp  = await fetchData(data);
+        document.getElementById('result').innerHTML = resp.output;
+        // var track = JSON.parse(resp.track);
+        var track = resp.track;
+        var tbody = document.getElementById("status-row");
+        tbody.innerHTML='';
+        for (var i = 0; i < track.length; i++) {
+            row = track[i];
+            console.log(row.status);
+            tr = `<tr>
+              <td>${row.created_on}</td> 
+              <td>${row.status}</td> 
+              <td>${row.memory}</td>
+              <td>${row.runtime}</td> 
+              <td>${row.language}</td>
+            </tr>`
+            tbody.innerHTML+=tr;
+        }
+        
+    }   
+
+</script>
+
 {% endblock %}

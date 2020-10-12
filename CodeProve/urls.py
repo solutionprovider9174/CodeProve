@@ -15,13 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls import url
 from datetime import datetime
-# from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.views import LoginView, LogoutView
 from app import views as user_views
 from app import forms
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth import views 
 
 urlpatterns = [
 
@@ -51,6 +52,11 @@ urlpatterns = [
             }
          ),
          name='logout'),
+    path('password-reset/', views.PasswordResetView.as_view(template_name='app/password_reset_form.html'), name='password_reset'),
+    path('password-reset/done/', views.PasswordResetDoneView.as_view(template_name='app/password_reset_done.html'), name='password_reset_done'),
+    path('passwor-reset-confirm/<uidb64>/<token>/',
+        views.PasswordResetConfirmView.as_view(template_name='app/password_reset_confirm.html'), name='password_reset_confirm'),
+    path('password-reset-complete/', views.PasswordResetCompleteView.as_view(template_name='app/password_reset_complete.html'), name='password_reset_complete'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL,
