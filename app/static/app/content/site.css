@@ -541,3 +541,62 @@ tbody+thead {
     text-decoration: none;
     padding: 5px;
 }
+
+
+/*==========add new css 13-10-2020==================*/
+
+
+.navbar {
+    background: #fff;
+}
+.custom-textarea textarea {
+    max-width: 100%;
+    height: 80vh;
+}
+.left-area {
+    height: 80vh;
+    overflow: auto;
+}
+.d-flex {
+  display: flex;
+} 
+.justify-content-between {
+  justify-content: space-between;
+}
+.short_icons li {
+    display: inline-block;
+    text-decoration: none;
+    list-style: none;
+    padding: 0 12px;
+}
+.align-items-center {
+  align-items: center;
+}
+.ghost-xs {
+    border: 0px;
+    display: inline-flex;
+    vertical-align: middle;
+    -webkit-box-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    align-items: center;
+    border-radius: 3px;
+    line-height: 20px;
+    transition: all 0.18s ease-in-out 0s;
+    outline: 0px;
+    cursor: pointer;
+    color: rgb(0, 0, 0);
+    background: transparent;
+    padding: 0px 7px;
+    font-size: 12px;
+    height: 28px;
+    margin-left: 18px;
+}
+.Indicator {
+    display: inline-flex;
+    width: 6px;
+    height: 6px;
+    margin-right: 8px;
+    border-radius: 3px;
+    background-color: rgb(176, 190, 197);
+}
