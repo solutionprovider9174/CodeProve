@@ -48,9 +48,9 @@ def newcompile(request):
 
 
         submit_track = SubmitTrack.objects.create(status=status,memory=memory,runtime=runtime,language=lang,created_by = request.user, problem=problems)
-        track = SubmitTrack.objects.filter(created_by=request.user).values("created_on","language","runtime","memory","status").order_by('-created_on')[:5]
+        track = SubmitTrack.objects.filter(created_by=request.user).values("created_on","language","runtime","memory","status").order_by('-created_on')[:10]
         data['track']=list(track)
-        print(data)
+        # print(data)
         return JsonResponse(data, safe=False)
     else:
         initial = {

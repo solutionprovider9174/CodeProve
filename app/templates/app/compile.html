@@ -1,162 +1,355 @@
+
+
 {% extends "app/layout.html" %}
 {% block content %}
-<h2>{{ title }}</h2>
-<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
-        <div class="container">
-            <div id="topbar">
-                <div class="lang-choose">
-                    <select class="form-control" name="lang" id="lang">
-                        {% for key,value_list in initial.context.items %}
-                        {% for value in value_list %}
-
-                        <option value="{{ key }},{{value.1 }}"> {{ key }} ({{ value.0 }})</option>
-
-                        {% endfor %}
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-
-            <div class="row">
-                <div id="showres">
-                    <div style="margin-left:85.4%;"class="run-save-panel">
-                        <button class="btn btn-success" id="runcode"  data-toggle="tooltip" data-placement="top" title="Compile and Run" onclick="outputFunction()">Compile and Run</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="input-container">
-                    <textarea id="custom-input" name="source" class="input-textarea" placeholder="Write inputs to program."></textarea>
-                </div>
-            </div>
-
-            <div class="outputbox">
-                <div class="outputio">
-                    <div class="outputerror">
-                        <div class="errorkey"></div>
-                        <pre class="errormessage"></pre>
-                    </div>
-
-                    <div class="io-show">
-                        <b>Output</b>
-                        <pre id="result" class="output-text outputo"> </pre>
-                        <b>Input</b>
-                        <pre class="output-text outputi"> </pre>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-<div class="container">
+<div class="description-page">
 <div class="row">
-<table>
-    <thead>
-        <tr>
-          <th>Time Submitted</th>
-          <th>Status</th>
-          <th>Runtime</th> 
-          <th>Memory</th>
-          <th>Language</th>
-        </tr>
-    </thead>
-    <tbody id ="status-row">
-        <tr>
-          <td>{{ description.track.created_on }}</td> 
-          <td>{{ description.track.status }}</td>
-          <td>{{ description.track.runtime }}</td> 
-          <td>{{ description.track.memory }}</td>
-          <td>{{ description.track.language }}</td>
-        </tr>
-    </tbody> 
-</table>
+   <div class=" col-md-6">
+      <ul class="nav nav-tabs">
+         <li class="active">
+            <a data-toggle="tab" href="#tab1">
+               <div class="tab-header">
+                  <svg viewBox="0 0 24 24" width="1em" height="1em" color="inherit" class="iconcss">
+                     <path fill-rule="evenodd" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h2v2H6v-2zm0 4h8v2H6v-2zm10 0h2v2h-2v-2zm-6-4h8v2h-8v-2z"></path>
+                  </svg>
+                  <span class="title">Description</span>
+               </div>
+            </a>
+         </li>
+         <li>
+            <a data-toggle="tab" href="#tab2">
+               <div class="tab-header">
+                  <svg viewBox="0 0 24 24" width="1em" height="1em" color="inherit" class="iconcss">
+                     <path fill-rule="evenodd" d="M5.016 17.995c0 .282.093.517.28.705.188.187.423.297.704.328h12a1.14 1.14 0 0 0 .703-.328.902.902 0 0 0 .281-.658c0-.25-.062-.454-.187-.61l-5.813-9.094V3.972h-1.968v4.366l-5.813 9.094a.875.875 0 0 0-.187.563zM6 21c-.844 0-1.547-.282-2.11-.845-.562-.563-.859-1.283-.89-2.16 0-.594.172-1.126.516-1.596L9 7.822V5.99a.953.953 0 0 1-.703-.282.956.956 0 0 1-.281-.704V3.972c0-.564.187-1.033.562-1.409C8.953 2.188 9.422 2 9.984 2h4.032c.562 0 1.03.188 1.406.563.375.376.562.845.562 1.409v1.033a.956.956 0 0 1-.28.704.953.953 0 0 1-.704.282v1.83l5.484 8.578c.344.47.516 1.002.516 1.596-.031.877-.328 1.597-.89 2.16-.563.563-1.266.845-2.11.845H6z"></path>
+                  </svg>
+                  <span class="title">Solution</span>
+               </div>
+            </a>
+         </li>
+         <li>
+            <a data-toggle="tab" href="#tab3">
+               <div class="tab-header">
+                  <svg viewBox="0 0 24 24" width="1em" height="1em" color="inherit" class="iconcss">
+                     <path fill-rule="evenodd" d="M8.995 22a.955.955 0 0 1-.704-.282.955.955 0 0 1-.282-.704V18.01H3.972c-.564 0-1.033-.195-1.409-.586A1.99 1.99 0 0 1 2 15.99V3.97c0-.563.188-1.032.563-1.408C2.94 2.188 3.408 2 3.972 2h16.056c.564 0 1.033.188 1.409.563.375.376.563.845.563 1.409V15.99a1.99 1.99 0 0 1-.563 1.432c-.376.39-.845.586-1.409.586h-6.103l-3.709 3.71c-.22.187-.454.281-.704.281h-.517zm.986-6.01v3.1l3.099-3.1h6.948V3.973H3.972V15.99h6.01zm-3.99-9.013h12.018v2.018H5.991V6.977zm0 4.037h9.014v1.972H5.99v-1.972z"></path>
+                  </svg>
+                  <span class="title">Discuss <span class="discuss-couunt"> (999+)</span></span>
+               </div>
+            </a>
+         </li>
+         <li>
+            <a data-toggle="tab" href="#tab4">
+               <div class="tab-header">
+                  <svg viewBox="0 0 24 24" width="1em" height="1em" color="inherit" class="iconcss">
+                     <path fill-rule="evenodd" d="M8.995 22a.955.955 0 0 1-.704-.282.955.955 0 0 1-.282-.704V18.01H3.972c-.564 0-1.033-.195-1.409-.586A1.99 1.99 0 0 1 2 15.99V3.97c0-.563.188-1.032.563-1.408C2.94 2.188 3.408 2 3.972 2h16.056c.564 0 1.033.188 1.409.563.375.376.563.845.563 1.409V15.99a1.99 1.99 0 0 1-.563 1.432c-.376.39-.845.586-1.409.586h-6.103l-3.709 3.71c-.22.187-.454.281-.704.281h-.517zm.986-6.01v3.1l3.099-3.1h6.948V3.973H3.972V15.99h6.01zm-3.99-9.013h12.018v2.018H5.991V6.977zm0 4.037h9.014v1.972H5.99v-1.972z"></path>
+                  </svg>
+                  <span class="title">Submissions</span>
+               </div>
+            </a>
+         </li>
+      </ul>
+      <div class="tab-content">
+         <div id="tab1" class="tab-pane fade in active">
+            <div class="description_dtl">
+               <div class="">
+                  <div class="">
+                     <h4><b> {{ description.problems.title }} </b></h4>
+                  </div>
+                  <div class="">
+                     <div  class="">Easy</div>
+                     <button class="btgofi">
+                        <svg viewBox="0 0 24 24" width="1em" height="1em" class="">
+                           <path fill-rule="evenodd" d="M7 19v-8H4v8h3zM7 9c0-.55.22-1.05.58-1.41L14.17 1l1.06 1.05c.27.27.44.65.44 1.06l-.03.32L14.69 8H21c1.1 0 2 .9 2 2v2c0 .26-.05.5-.14.73l-3.02 7.05C19.54 20.5 18.83 21 18 21H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h3zm2 0v10h9l3-7v-2h-9l1.34-5.34L9 9z"></path>
+                        </svg>
+                        <span>17337</span>
+                     </button>
+                     <button class="btngofi">
+                        <svg viewBox="0 0 24 24" width="1em" height="1em" class="">
+                           <path fill-rule="evenodd" d="M17 3v12c0 .55-.22 1.05-.58 1.41L9.83 23l-1.06-1.05c-.27-.27-.44-.65-.44-1.06l.03-.32.95-4.57H3c-1.1 0-2-.9-2-2v-2c0-.26.05-.5.14-.73l3.02-7.05C4.46 3.5 5.17 3 6 3h11zm-2 12V5H6l-3 7v2h9l-1.34 5.34L15 15zm2-2h3V5h-3V3h3a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-3v-2z"></path>
+                        </svg>
+                        <span>620</span>
+                     </button>
+                     <button class="btngofi">
+                        <svg viewBox="0 0 24 24" width="1em" height="1em" class="">
+                           <path fill-rule="evenodd" d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z"></path>
+                        </svg>
+                        <span>Add to List</span>
+                     </button>
+                     <button class="btngofi">
+                        <svg viewBox="0 0 24 24" width="1em" height="1em" class="">
+                           <path fill-rule="evenodd" d="M17 5V2l5 5h-9a2 2 0 0 0-2 2v8H9V9a4 4 0 0 1 4-4h4zm3 14V9h2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3v2H4v14h16z"></path>
+                        </svg>
+                        <span>Share</span>
+                     </button>
+                  </div>
+               </div>
+               <div class="content__u3I1 question-content__JfgR">
+                  <div>
+                     <p> {{ description.problems.description }} </p>
+                     <p>&nbsp;</p>
+                     {% for e in description.examples %}
+                     <p><strong> {{ e.title }} </strong></p>
+                     <pre><strong>Input:</strong> {{ e.example_input }}
+	                     <strong>Output:</strong> {{ e.output }} 
+	                    </pre>
+                     {% endfor %}
+                     <p>&nbsp;</p>
+                     <p><strong>Constraints:</strong></p>
+                     <ul>
+                        <li><code>2 &lt;= nums.length &lt;= 10<sup>5</sup></code></li>
+                        <li><code>-10<sup>9</sup> &lt;= nums[i] &lt;= 10<sup>9</sup></code></li>
+                        <li><code>-10<sup>9</sup> &lt;= target &lt;= 10<sup>9</sup></code></li>
+                        <li><strong>Only one valid answer exists.</strong></li>
+                     </ul>
+                  </div>
+               </div>
+               <div style="position: relative;">
+                  <div class="css-q9155n">
+                     <div class="css-oqu510">
+                        <div class="css-y3si18">Accepted</div>
+                        <div class="css-jkjiwi">3,410,113</div>
+                     </div>
+                     <div class="css-oqu510">
+                        <div class="css-y3si18">Submissions</div>
+                        <div class="css-jkjiwi">7,429,393</div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="accordion" id="accordionExample">
+               {% for h in description.hints %}
+               <div class="card">
+                  <div class="card-header" id="heading{{ h.id }}">
+                     <h4 class="mb-0">
+                        <button class="colap-btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapse{{ h.id }}" aria-expanded="false" aria-controls="collapse{{ h.id }}">
+                        {{ h.title }}
+                        </button>
+                     </h4>
+                  </div>
+                  <div id="collapse{{ h.id }}" class="collapse" aria-labelledby="heading{{ h.id }}" data-parent="#accordionExample">
+                     <div class="card-body">
+                        {{ h.description }}
+                     </div>
+                  </div>
+               </div>
+               {% endfor %}
+            </div>
+         </div>
+         <div id="tab2" class="tab-pane fade">
+            <h2><b> Solution </b></h2>
+            {% for s in description.solutions %}
+            <b> {{ s.title }} </b>  <br><br>
+            {{ s.description }} <br><br>
+            <pre> {{ s.code }} </pre> <br>
+            <b> Complexity Analysis:</b> <br>{{ s.complexity_analysis }} <br><br><br>
+            {% endfor %}
+         </div>
+         <div id="tab3" class="tab-pane fade">
+            <div class="description_dtl">
+               <div class="">
+                  <div class="">
+                     <h4><b> {{ description.problems.title }} </b></h4>
+                  </div>
+                  <div class="">
+                     <div  class="">Easy</div>
+                     <button class="btgofi">
+                        <svg viewBox="0 0 24 24" width="1em" height="1em" class="">
+                           <path fill-rule="evenodd" d="M7 19v-8H4v8h3zM7 9c0-.55.22-1.05.58-1.41L14.17 1l1.06 1.05c.27.27.44.65.44 1.06l-.03.32L14.69 8H21c1.1 0 2 .9 2 2v2c0 .26-.05.5-.14.73l-3.02 7.05C19.54 20.5 18.83 21 18 21H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h3zm2 0v10h9l3-7v-2h-9l1.34-5.34L9 9z"></path>
+                        </svg>
+                        <span>17337</span>
+                     </button>
+                     <button class="btngofi">
+                        <svg viewBox="0 0 24 24" width="1em" height="1em" class="">
+                           <path fill-rule="evenodd" d="M17 3v12c0 .55-.22 1.05-.58 1.41L9.83 23l-1.06-1.05c-.27-.27-.44-.65-.44-1.06l.03-.32.95-4.57H3c-1.1 0-2-.9-2-2v-2c0-.26.05-.5.14-.73l3.02-7.05C4.46 3.5 5.17 3 6 3h11zm-2 12V5H6l-3 7v2h9l-1.34 5.34L15 15zm2-2h3V5h-3V3h3a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-3v-2z"></path>
+                        </svg>
+                        <span>620</span>
+                     </button>
+                     <button class="btngofi">
+                        <svg viewBox="0 0 24 24" width="1em" height="1em" class="">
+                           <path fill-rule="evenodd" d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z"></path>
+                        </svg>
+                        <span>Add to List</span>
+                     </button>
+                     <button class="btngofi">
+                        <svg viewBox="0 0 24 24" width="1em" height="1em" class="">
+                           <path fill-rule="evenodd" d="M17 5V2l5 5h-9a2 2 0 0 0-2 2v8H9V9a4 4 0 0 1 4-4h4zm3 14V9h2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3v2H4v14h16z"></path>
+                        </svg>
+                        <span>Share</span>
+                     </button>
+                  </div>
+               </div>
+               <div class="content__u3I1 question-content__JfgR">
+                  <div>
+                     <p> {{ description.problems.description }} </p>
+                     <p>&nbsp;</p>
+                     {% for e in description.examples %}
+                     <p><strong> {{ e.title }} </strong></p>
+                     <pre><strong>Input:</strong> {{ e.example_input }}
+	                     <strong>Output:</strong> {{ e.output }} 
+	                    </pre>
+                     {% endfor %}
+                     <p>&nbsp;</p>
+                     <p><strong>Constraints:</strong></p>
+                     <ul>
+                        <li><code>2 &lt;= nums.length &lt;= 10<sup>5</sup></code></li>
+                        <li><code>-10<sup>9</sup> &lt;= nums[i] &lt;= 10<sup>9</sup></code></li>
+                        <li><code>-10<sup>9</sup> &lt;= target &lt;= 10<sup>9</sup></code></li>
+                        <li><strong>Only one valid answer exists.</strong></li>
+                     </ul>
+                  </div>
+               </div>
+               <div style="position: relative;">
+                  <div class="css-q9155n">
+                     <div class="css-oqu510">
+                        <div class="css-y3si18">Accepted</div>
+                        <div class="css-jkjiwi">3,410,113</div>
+                     </div>
+                     <div class="css-oqu510">
+                        <div class="css-y3si18">Submissions</div>
+                        <div class="css-jkjiwi">7,429,393</div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div id="tab4" class="tab-pane fade">
+         	<table>
+			    <thead>
+			        <tr>
+			          <th>Time Submitted</th>
+			          <th>Status</th>
+			          <th>Runtime</th> 
+			          <th>Memory</th>
+			          <th>Language</th>
+			        </tr>
+			    </thead>
+			    <tbody id ="status-row">
+			        <tr>
+			          <td>{{ description.track.created_on }}</td> 
+			          <td>{{ description.track.status }}</td>
+			          <td>{{ description.track.runtime }}</td> 
+			          <td>{{ description.track.memory }}</td>
+			          <td>{{ description.track.language }}</td>
+			        </tr>
+			    </tbody> 
+			</table>
+         </div>
+      </div>
+   </div>
+   <div class="col-md-6">
+      <div id="right_panel">
+         <div class="right-top-area d-flex justify-content-between align-items-center">
+            <div class="d-flex">
+               <div class="language-select">
+                  <form>
+                     <div class="form-group">
+                        <select class="form-control" id="lang">
+                           {% for key,value_list in initial.context.items %}
+                           {% for value in value_list %}
+                           <option value="{{ key }},{{value.1 }}"> {{ key }} ({{ value.0 }})</option>
+                           {% endfor %}
+                           {% endfor %}
+                        </select>
+                     </div>
+                  </form>
+               </div>
+               <div class="auto-complete">
+                  <button type="ghost" class="ghost-xs"><span class="Indicator"></span><span class="StyledSpan">Autocomplete</span></button>
+               </div>
+            </div>
+            <div class="short-icons">
+               <ul class="short_icons">
+                  <li>
+                     <svg viewBox="0 0 24 24" width="1em" height="1em">
+                        <path fill-rule="evenodd" d="M13.91 3.5c.436.031.795.187 1.075.468.28.28.421.63.421 1.052 0 .42-.14.771-.42 1.052-.281.28-.64.42-1.076.42-.437 0-.795-.14-1.076-.42-.28-.28-.42-.631-.42-1.052 0-.421.14-.772.42-1.052.28-.281.64-.437 1.076-.468zm-.374 4.77c.56 0 .85.233.865.7.015.468-.024.874-.117 1.217l-1.17 4.395c-.404 1.465-.576 2.385-.514 2.759.125.25.398.25.819 0 .42-.25.818-.5 1.192-.748l.047-.047c.062 0 .125.03.187.093l.187.328c.031.062 0 .124-.094.187L12.6 18.79c-.405.28-.966.507-1.683.678-.717.172-1.029-.35-.935-1.566.561-2.681 1.036-4.684 1.426-6.009.39-1.325.101-1.675-.865-1.052l-1.075.702c-.094.062-.156.085-.187.07-.032-.016-.078-.102-.14-.257L9 11.122c0-.031.047-.094.14-.187.094-.094.678-.522 1.754-1.286 1.075-.764 1.956-1.224 2.642-1.38z"></path>
+                     </svg>
+                  </li>
+                  <li>
+                     <svg viewBox="0 0 24 24" width="1em" height="1em" >
+                        <path fill-rule="evenodd" d="M9.984 3v2.016H8.016v4.968a2.17 2.17 0 0 1-.61 1.43C7.031 11.804 6.563 12 6 12c.563 0 1.031.195 1.406.586.375.39.578.867.61 1.43v4.968h1.968V21H8.016c-.563 0-1.04-.195-1.43-.586A1.945 1.945 0 0 1 6 18.984V15c0-.563-.195-1.031-.586-1.406a2.17 2.17 0 0 0-1.43-.61H3v-1.968h.984a2.17 2.17 0 0 0 1.43-.61C5.804 10.031 6 9.563 6 9V5.016c0-.563.195-1.04.586-1.43.39-.39.867-.586 1.43-.586h1.968zm6 0c.563 0 1.04.195 1.43.586.39.39.586.867.586 1.43V9c0 .563.195 1.031.586 1.406.39.375.867.578 1.43.61H21v1.968h-.984a2.17 2.17 0 0 0-1.43.61c-.39.375-.586.843-.586 1.406v3.984c0 .563-.195 1.04-.586 1.43-.39.39-.867.586-1.43.586h-1.968v-2.016h1.968v-4.968a2.17 2.17 0 0 1 .61-1.43c.375-.39.843-.586 1.406-.586-.563 0-1.031-.195-1.406-.586a2.17 2.17 0 0 1-.61-1.43V5.016h-1.968V3h1.968z"></path>
+                     </svg>
+                  </li>
+                  <li>
+                     <svg viewBox="0 0 24 24" width="1em" height="1em" >
+                        <path fill-rule="evenodd" d="M14 8H3l7-5v3h4a7 7 0 0 1 0 14h-4a7 7 0 0 1-7-7v-1h2v1a5 5 0 0 0 5 5h4a5 5 0 0 0 0-10z"></path>
+                     </svg>
+                  </li>
+                  <li>
+                     <svg viewBox="0 0 24 24" width="1em" height="1em">
+                        <path fill-rule="evenodd" d="M14.895 2c-.69.734-1.724 1.212-2.896 1.212-1.17 0-2.203-.478-2.894-1.212-.279.084-3.866 2.176-4.146 2.449.275.975.163 2.124-.42 3.157-.586 1.033-1.505 1.706-2.472 1.949-.09.383-.09 4.507 0 4.89.967.243 1.887.916 2.471 1.949.585 1.033.697 2.182.42 3.157.28.273 3.868 2.365 4.146 2.449.69-.734 1.725-1.212 2.895-1.212 1.172 0 2.206.478 2.897 1.212.278-.084 3.864-2.176 4.145-2.449-.276-.975-.164-2.124.42-3.157.585-1.033 1.505-1.706 2.472-1.949.09-.383.09-4.507 0-4.89-.967-.243-1.886-.916-2.471-1.949-.584-1.033-.696-2.182-.42-3.157-.28-.273-3.868-2.365-4.147-2.449m.195 2.39c.556.318 1.23.714 1.765 1.038a6.275 6.275 0 0 0 .817 3.147 6.215 6.215 0 0 0 2.276 2.314c.01.679.01 1.543 0 2.222a6.208 6.208 0 0 0-2.276 2.314 6.277 6.277 0 0 0-.818 3.148c-.535.323-1.207.718-1.763 1.037a6.175 6.175 0 0 0-3.092-.822c-1.103 0-2.172.29-3.09.822a91.762 91.762 0 0 1-1.763-1.037 6.277 6.277 0 0 0-.818-3.148 6.215 6.215 0 0 0-2.276-2.314 80.47 80.47 0 0 1 0-2.222 6.213 6.213 0 0 0 2.275-2.314c.552-.975.83-2.069.818-3.147.536-.324 1.209-.72 1.764-1.038a6.184 6.184 0 0 0 3.09.822 6.178 6.178 0 0 0 3.09-.822M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path>
+                     </svg>
+                  </li>
+                  <li>
+                     <svg viewBox="0 0 24 24" width="1em" height="1em" >
+                        <path fill-rule="evenodd" d="M6 15H4v5h5v-2H6v-3zM4 9h2V6h3V4H4v5zm14 9h-3v2h5v-5h-2v3zM15 4v2h3v3h2V4h-5z"></path>
+                     </svg>
+                  </li>
+               </ul>
+            </div>
+         </div>
+         <form>
+            <div class="form-group custom-textarea">
+               <textarea class="form-control" id="custom-input" height="100vh" max-width="100%"></textarea>
+            </div>
+         </form>
+         <div class="io-show">
+            <b>Output</b>
+            <pre id="result" class="output-text outputo"> </pre>
+            <div>
+               <button class="btn btn-secondary" id="runcode"  data-toggle="tooltip" data-placement="top" title="Compile and Run" onclick="outputFunction()">Run Code</button>
+               <button class="btn btn-light" data-toggle="tab" href="#tab4" onclick="outputFunction()">Submit</button>
+            </div>
+         </div>
+      </div>
+   </div>
 </div>
+<div class="row">
+   <div id="showres">
+      <div style="margin-left:85.4%;"class="run-save-panel">
+      </div>
+   </div>
 </div>
-
-<div class="container">
-    <div class="row">
-        <h3> Problems </h3>
-
-        {{ description.problems }}
-
-        <h3> Examples </h3>
-
-        {% for e in description.examples %}
-  
-        <b> {{ e.title }} </b> <br>
-        <b> Input:</b> {{ e.example_input }} <br>
-        <b> Output:</b> {{ e.output }} <br>
-
-        {% endfor %}
-
-        <h3> Hints </h3>
-
-        {% for h in description.hints %}
-
-        <b> {{ h.title }} </b>  <br>
-        {{ h.description }} <br><br>
-
-        {% endfor %}
-
-        <h3> Solutions </h3>
-
-        {% for s in description.solutions %}
-
-        <b> {{ s.title }} </b>  <br>
-        {{ s.description }} <br>
-        {{ s.code }} <br>
-        {{ s.complexity_analysis }} <br>
-
-        {% endfor %}
-
-    </div>
-
-
-
 {% csrf_token %}
 <script type="text/javascript">
-    const csrfToken = document.getElementsByName("csrfmiddlewaretoken")[0].value;
-    async function fetchData(data) {
-        let url = "{% url 'newcompile' %}";
-        let response = await fetch(url, {method: 'POST',body: data})
-        var ret;
-        if (response.ok){
-            ret = await response.json();
-        }else{
-            ret = response.status;
-        }
-        return ret;
-    }
-    async function outputFunction() {
-        var language = document.getElementById('lang').value;
-        var script = document.getElementById('custom-input').value;
-        var resp = null;
-        var data = new FormData();
-        data.append('lang',language);
-        data.append('source',script);
-        data.append('csrfmiddlewaretoken',csrfToken);
-        resp  = await fetchData(data);
-        document.getElementById('result').innerHTML = resp.output;
-        // var track = JSON.parse(resp.track);
-        var track = resp.track;
-        var tbody = document.getElementById("status-row");
-        tbody.innerHTML='';
-        for (var i = 0; i < track.length; i++) {
-            row = track[i];
-            console.log(row.status);
-            tr = `<tr>
-              <td>${row.created_on}</td> 
-              <td>${row.status}</td> 
-              <td>${row.memory}</td>
-              <td>${row.runtime}</td> 
-              <td>${row.language}</td>
-            </tr>`
-            tbody.innerHTML+=tr;
-        }
-        
-    }   
-
+   const csrfToken = document.getElementsByName("csrfmiddlewaretoken")[0].value;
+   async function fetchData(data) {
+       let url = "{% url 'newcompile' %}";
+       let response = await fetch(url, {method: 'POST',body: data})
+       var ret;
+       if (response.ok){
+           ret = await response.json();
+       }else{
+           ret = response.status;
+       }
+       return ret;
+   }
+   async function outputFunction() {
+       var language = document.getElementById('lang').value;
+       var script = document.getElementById('custom-input').value;
+       var resp = null;
+       var data = new FormData();
+       data.append('lang',language);
+       data.append('source',script);
+       data.append('csrfmiddlewaretoken',csrfToken);
+       resp  = await fetchData(data);
+       document.getElementById('result').innerHTML = resp.output;
+       // var track = JSON.parse(resp.track);
+       var track = resp.track;
+       var tbody = document.getElementById("status-row");
+       tbody.innerHTML='';
+       for (var i = 0; i < track.length; i++) {
+           row = track[i];
+           tr = `<tr>
+             <td>${row.created_on}</td> 
+             <td>${row.status}</td> 
+             <td>${row.memory}</td>
+             <td>${row.runtime}</td> 
+             <td>${row.language}</td>
+           </tr>`
+           tbody.innerHTML+=tr;
+       }
+       
+   }   
+   
 </script>
-
 {% endblock %}
+
