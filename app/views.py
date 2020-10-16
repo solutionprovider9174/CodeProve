@@ -19,11 +19,16 @@ def home(request):
 
 
 def newcompile(request):
-    problems = Problem.objects.get(pk=1)
-    examples = Example.objects.filter(problem=problems)
-    hints = Hint.objects.filter(problem=problems)
-    solutions = Solution.objects.filter(problem=problems)
-    track = SubmitTrack.objects.filter(created_by=request.user).order_by('-created_on')
+    problems=examples=hints=solutions=track=None
+    try:
+        problems = Problem.objects.get(pk=1)
+    except:
+        pass
+    else:
+        examples = Example.objects.filter(problem=problems)
+        hints = Hint.objects.filter(problem=problems)
+        solutions = Solution.objects.filter(problem=problems)
+        track = SubmitTrack.objects.filter(created_by=request.user).order_by('-created_on')
 
     if request.method == 'POST':
         run_url = "https://api.jdoodle.com/v1/execute/"
